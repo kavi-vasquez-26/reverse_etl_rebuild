@@ -1,0 +1,7 @@
+{
+        "platform_client_uuid": mysql.VARCHAR(36),
+        "enrollment_count": mysql.INTEGER(),
+        "active_count": mysql.INTEGER(),
+        "complete_count": mysql.INTEGER(),
+        "refreshed_at": mysql.TIMESTAMP(),
+}

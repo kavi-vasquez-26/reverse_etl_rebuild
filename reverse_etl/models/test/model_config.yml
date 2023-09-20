@@ -1,0 +1,56 @@
+model_id: test_model
+environments: # one config file for each environment
+  - stage
+  - team_therapist_ops
+dag_options:
+  catchup: False
+  schedule_interval: EVERY_4HOUR_AT_MINUTE_45
+  is_paused_upon_creation: True
+  max_active_runs: 1
+pipes: # can accomodate any number of pipes (i.e. snapshots and summaries)
+  snapshot:
+    source:
+      table: fact_feed_client_data_snapshot
+      query: ../../common/query/default_source.sql
+      snapshot_options:
+        transfer_type: snapshot
+      incremental_options:
+        transfer_type: incremental
+        incremental_key: refreshed_at
+        incremental_days: 31
+        # exec_date: {ds} # almost positive this is for partitions
+    tmp:
+      database: marketing_integration_etl
+      table: tmp_platform_client_data
+    target:
+      database: client_dashboard
+      table: platform_client_data
+      schema: ../../common/schema/default_source.json
+    tasks: # optional tasks
+      insert_new_records: ../../common/query/default_insert.sql
+  summary:
+    source:
+      table: fact_feed_client_data_aggregate
+      query: ../../common/query/default_source.sql
+      snapshot_options:
+        transfer_type: snapshot
+      incremental_options:
+        transfer_type: incremental
+        incremental_key: refreshed_at
+        incremental_days: 31
+        # exec_date: {ds} # almost positive this is for partitions
+    tmp:
+      database: marketing_integration_etl
+      table: tmp_platform_client_data_aggregate
+    target:
+      database: client_dashboard
+      table: platform_client_data_aggregate
+      schema: ../../common/schema/default_summary.json
+    tasks: # optional tasks
+      create_index: ./query/create_index.sql
+      insert_new_records: ./query/insert_new_records.sql
+      update_fingerprint_records: ./query/update_fingerprint_records.sql
+      update_emails_records: ./query/update_emails_records.sql
+      update_existing_records: ./query/update_existing_records.sql
+      update_existing_account_records: ./query/update_existing_account_records.sql
+      update_existing_uuid_records: ./query/update_existing_uuid_records.sql

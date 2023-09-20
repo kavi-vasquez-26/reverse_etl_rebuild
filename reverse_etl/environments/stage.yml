@@ -1,0 +1,119 @@
+---
+settings:
+  bigquery_project_id_source: swordhealth-staging
+  bigquery_project_id: swordhealth-staging
+  dbt_bigquery_location: us
+  dbt_bigquery_data_location: us
+  dbt_bigquery_central_alias: central
+  bigquery_staging_schema: staging
+  bigquery_staging_dataset: staging_legacy
+  bigquery_dw_dataset: staging_data_warehouse
+  bigquery_dw_strict_dataset: ''
+  bigquery_transform_dataset: staging_transform
+  bigquery_staging_api_dataset: staging_staging_api
+  bigquery_reports_dataset: staging_reports
+  bigquery_quarantine_dataset: staging_quarantine
+  bigquery_eligibility_dataset: staging_eligibility
+  bigquery_dbt_audit_dataset_id: staging_audit
+  bigquery_dbt_audit_source_dataset: staging_audit_sources
+  bigquery_dbt_audit_staging_dataset: staging_audit_staging
+  bigquery_project_id_gsheets_source: swordhealth-staging
+  bigquery_gsheets_schema: raw_airflow_gsheets
+  bigquery_gsheets_staging_enable: 'False'
+  gcloud_client_service_account_path: "/usr/app/kube-secrets/staging/service-account.json"
+  gcp_conn_id: gcp_data_dbt_staging
+  bigquery_raw_kafka_dataset: raw_kafka_mysql_operational
+  bigquery_snapshot_kafka_mysql_dataset: snapshot_mysql
+  bigquery_foundation_kafka_mysql_dataset: foundation_mysql
+  bigquery_enrichment_dataset: enrichment
+  bigquery_warehouse_dataset: warehouse_normal
+  bigquery_warehouse_strict_dataset: ''
+  code_fish_enable: 'True'
+  bucket_name: europe-west1-composer-stagi-ceffb7cb-bucket
+  bigquery_foundation_api_dataset: foundation_api
+  bigquery_raw_api_extraction_dataset: raw_api_extraction
+  api_extraction_enabled: 'True'
+  zoom_phone_extraction_api_enabled: 'False'
+  zendesk_extraction_api_enabled: 'False'
+  sendbird_extraction_api_enabled: 'True'
+  marketo_extraction_api_enabled: 'False'
+inactive_dags:
+- dbt_run_claims_warehouse
+- my_productivity_bq_to_mysql
+- iterable_bq_to_mysql
+- table_bq_to_gs
+- gsheets_to_table_bq
+- iterable_to_dw
+- client_dashboard_bq_to_mysql
+- eligible_enrollments_bq_to_sfdc
+- dynamic_todos_bq_to_mysql
+composer_cluster:
+  data:
+    service_accounts_secret_mapping:
+    - name: staging
+      secret_name: dbt
+      secret_key: service-account.json
+    namespace: data
+    config_file: ''
+  ai:
+    service_accounts_secret_mapping:
+    - name: staging
+      secret_name: dbt
+      secret_key: service-account.json
+    namespace: algorithms
+    config_file: ''
+dbt_kube_operator:
+  data:
+    kube_secrets_path: "/usr/app/kube-secrets"
+    profiles_dir: "/usr/app/sword-dw/.dbt"
+    target_path: "/usr/app/sword-dw/target"
+    default_threads_num: 8
+    default_timeout_seconds: 600
+    default_retries: 3
+    default_target: ci
+  ai:
+    kube_secrets_path: "/usr/app/kube-secrets"
+    profiles_dir: "/usr/app/sword-ai-dw/.dbt"
+    target_path: "/usr/app/sword-ai-dw/target"
+    default_threads_num: 8
+    default_timeout_seconds: 600
+    default_retries: 3
+    default_target: ci
+status_cake_notifications:
+  hook_enabled: false
+slack_notifications:
+  data:
+    alert_success_slack_channel: data-airflow-staging
+    alert_error_slack_channel: data-error-airflow-staging
+    alert_up_to_retry_slack_channel: data-error-airflow-staging
+    alert_to_sla_slack_channel: data-error-airflow-staging
+    flag_emoji: ":costa-confuso:"
+    users_member_id:
+      dummy: dummy
+    slack_webhook: slack_webhook_http
+  ai:
+    alert_success_slack_channel: data-airflow-staging
+    alert_error_slack_channel: data-airflow-staging
+    flag_emoji: ":costa-confuso:"
+    users_member_id:
+      dummy: dummy
+    slack_webhook: slack_webhook_http
+frequency:
+  hourly:
+    dbt_run_dw:
+      schedule_interval: EVERY_HOUR_AT_MINUTE_35
+      full_refresh: false
+      prefix: 1001
+    dbt_run_claims_warehouse:
+      schedule_interval: EVERY_HOUR_AT_MINUTE_45
+      full_refresh: false
+      prefix: 1301
+  backfill:
+    dbt_run_dw:
+      schedule_interval: EVERY_FIRST_DAY_OF_THE_MONTH_AT_8_25AM
+      full_refresh: true
+      prefix: 1100
+    dbt_run_claims_warehouse:
+      schedule_interval: EVERY_DAY_7AM
+      full_refresh: false
+      prefix: 1300

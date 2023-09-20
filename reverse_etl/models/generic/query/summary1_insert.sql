@@ -1,0 +1,1 @@
+-- This file holds the parameterized query for inserting data into target table

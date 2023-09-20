@@ -1,0 +1,18 @@
+{
+        "platform_client_uuid": mysql.VARCHAR(36),
+        "therapy_uuid": mysql.VARCHAR(36),
+        "age_band_uuid": mysql.VARCHAR(36),
+        "gender_uuid": mysql.VARCHAR(36),
+        "country_code": mysql.VARCHAR(2),
+        "region_code": mysql.VARCHAR(20),
+        "unit": mysql.ENUM('dpt', 'bloom', 'move'),
+        "year": mysql.INTEGER(),
+        "month": mysql.INTEGER(),
+        "enrollments": mysql.INTEGER(),
+        "therapy_minutes": mysql.INTEGER(),
+        "nps_numerator": mysql.INTEGER(),
+        "nps_denominator": mysql.INTEGER(),
+        "msat_numerator": mysql.INTEGER(),
+        "msat_denominator": mysql.INTEGER(),
+        "refreshed_at": mysql.TIMESTAMP(),
+}

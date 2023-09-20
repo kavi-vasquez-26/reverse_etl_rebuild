@@ -1,0 +1,50 @@
+dag_id: <dag_id>
+environments: # one config file for each environment
+  - dev
+  - prod
+pipes: # can accomodate any number of pipes (i.e. snapshots and summaries)
+  snapshot1:
+    source:
+      table: <table_name>
+      query: default_source
+    tmp:
+      database: <database_name>
+      table: <table_name>
+    target:
+      database: <database_name>
+      table: <table_name>
+      query: default_insert
+      schema: default_schema
+  summary1:
+    source:
+      table: <table_name>
+      query: query/summary1_source.sql
+    tmp:
+      database: <database_name>
+      table: <table_name>
+    target:
+      database: <database_name>
+      table: <table_name>
+      query: query/summary1_insert.sql
+      schema: default_schema
+  summary2:
+    source:
+      table: <table_name>
+      query: default_source
+    tmp:
+      database: <database_name>
+      table: <table_name>
+    target:
+      database: <database_name>
+      table: <table_name>
+      query: default_insert
+
+
+
+
+
+
+# exec_date: default_date
+# dw_config:
+#   is_dw: true
+#   warehouse: data_feed_warehouse
